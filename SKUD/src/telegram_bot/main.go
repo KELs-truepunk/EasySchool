@@ -33,7 +33,7 @@ var (
 		MQTTBroker:   "tcp://localhost:1883",
 		MQTTUsername: "skud_tg_bot",
 		MQTTPassword: "1234",
-		BotToken:     "8387914042:AAFksNAU3NEtwtNXVEgLHZs1MtcAkRrka0Q",
+		BotToken:     "",
 	}
 
 	// Список доступных кабинетов
