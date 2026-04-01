@@ -1,35 +1,27 @@
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
+#include <RCSwitch.h>
 
-// Пин CE и CSN для NRF24L01+
-#define CE_PIN 9
-#define CSN_PIN 10
-
-RF24 radio(CE_PIN, CSN_PIN);
-
-const byte address[] = "1Node";  // Адрес канала связи
-
-const int buttonPin = 2;  // Пин кнопки
+RCSwitch mySwitch = RCSwitch();
+const int buttonPin = 2; // Пин кнопки (как в вашем коде)
 
 void setup() {
   Serial.begin(9600);
-  pinMode(buttonPin, INPUT_PULLUP);  // Внутренний подтягивающий резистор
+  pinMode(buttonPin, INPUT_PULLUP);
 
-  radio.begin();
-  radio.openWritingPipe(address);  // Открываем канал для передачи
-  radio.setPALevel(RF24_PA_LOW);   // Уровень мощности (можно RF24_PA_HIGH)
-  radio.stopListening();            // Переходим в режим передачи
+  // Передатчик TU0 подключаем DATA к пину D10
+  mySwitch.enableTransmit(10);
+  
+  Serial.println("Пульт готов к передаче...");
 }
 
 void loop() {
-  int buttonState = digitalRead(buttonPin);
-
-  if (buttonState == LOW) {  // Кнопка нажата (LOW из-за INPUT_PULLUP)
-    const char msg[] = "1";
-    radio.write(&msg, sizeof(msg));  // Отправляем "1"
-    Serial.println("Отправлено: 1");
-
-    delay(300);  // Антидребезг
+  // Кнопка нажата (LOW из-за INPUT_PULLUP)
+  if (digitalRead(buttonPin) == LOW) {
+    
+    // Вместо строки "1" отправляем число 1
+    // 24 — это стандартная длина протокола для этих модулей
+    mySwitch.send(1, 24); 
+    
+    Serial.println("1");
+    delay(300); // Антидребезг (как в вашем коде)
   }
 }
